@@ -1,0 +1,201 @@
+---
+title: "exercise 2"
+output: 
+  word_document: default
+  pdf_document: default
+date: "2025-02-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Questions about Functions in R
+
+1. **Define what a function is in the context of R.**
+A function in R is a block of reusable code that performs a specific task. Functions help in modular programming, reducing redundancy, and improving code readability.
+
+2. **Explain the process of defining a function in R.**
+A function in R uses keyword function()
+
+```{r}
+my_function <- function(arg1, arg2) {
+  # Function body
+  result <- arg1 + arg2
+  return(result)
+}
+```
+
+3. **Discuss the significance of the `return` statement in R functions.**
+The return() function explicitly specifies the value a function should output. While R implicitly returns the last evaluated expression, using return() improves code readability and makes the function's intent clearer.
+example: 
+
+```{r}
+sum_values <- function(a, b) {
+  return(a + b)
+}
+print(sum_values(5, 10))
+```
+
+4. **Explore the differences between global and local variables within R functions.**
+Global variables are accessible from anywhere in the script.
+Local variables exist only inside a function and do not affect global scope.
+
+5. **Demonstrate how to pass arguments to a function in R.**
+Function arguments are specified within parentheses and used inside the function body.
+
+```{r}
+multiply_numbers <- function(a, b) {
+  return(a * b)
+}
+
+print(multiply_numbers(6, 7))
+
+```
+
+6. **Provide an example of a built-in function in R and describe its purpose.**
+One common built-in function is mean(), which computes the average of a set of values.
+
+```{r}
+numbers <- c(5, 15, 25, 35, 45)
+mean(numbers)
+```
+
+
+7. **Examine the importance of the `apply` family of functions in R.**
+The apply family (apply(), lapply(), sapply(), vapply()) allows vectorized operations over data structures like matrices and lists, reducing the need for explicit loops and improving performance.
+
+8. **Choose a specific built-in function in R and explain its purpose. Provide an example demonstrating how to     use this function with relevant arguments and showcase the expected output. Additionally, discuss the         significance of this function within the broader context of data analysis in R.**
+The sum() function calculates the total of all elements in a numeric vector.
+Why is it Important?
+*Frequently used in financial and statistical calculations.
+*Helps in aggregating numerical data easily.
+
+```{r}
+values <- c(12, 24, 36, 48)
+total_sum <- sum(values)
+print(total_sum)
+```
+
+
+9. **Discuss strategies for handling missing values within an R function.**
+To manage missing values, the apply() function can be used in combination with ifelse() to handle missing data in a structured way. This approach allows applying a custom function across the rows or columns of a data frame or matrix. Specifically, the function can identify missing values using is.na() and replace them based on a condition using ifelse(). The ifelse() function evaluates each element in a vector or matrix, returning one value if the condition is TRUE and another if it is FALSE, making it a flexible tool for handling missing data.
+
+10. **Investigate the role of the `source()` function in executing R scripts.**
+The source() function is used to execute an external R script.
+
+---
+
+## Advanced User-Defined Function
+
+Create an R function that incorporates loops and conditional statements. The function should take a numeric parameter, perform a specific operation (e.g., calculation, manipulation), and return the result. After defining the function, call it with a numeric argument and display the output.
+
+Feel free to be creative with the function's purpose and complexity. Your goal is to showcase your understanding of loops, conditionals, and user-defined functions in R.
+
+```{r}
+fibonacci_even_sum <- function(n) {
+  if (n <= 0) {
+    return("Input must be a positive integer.")
+  }
+  
+  fib_sequence <- numeric(n)
+  fib_sequence[1] <- 0
+  fib_sequence[2] <- 1
+  
+  for (i in 3:n) {
+    fib_sequence[i] <- fib_sequence[i - 1] + fib_sequence[i - 2]
+  }
+  
+  even_sum <- sum(fib_sequence[fib_sequence %% 2 == 0])
+  
+  return(even_sum)
+}
+print(fibonacci_even_sum(10)) 
+print(fibonacci_even_sum(15))  
+print(fibonacci_even_sum(-5))  
+```
+
+# Functional Programming
+
+- Given an accounting routine used in a bookshop. It works on a list with sublists, which look like this:
+```{r}
+# orders = [[bookshop order1, (book1 order number, quantity, price per item),
+#           (book2 order number, quantity, price per item),
+#           ... ],
+#          ...,
+#         [bookshop ordern,
+#           (book1 order number, quantity, price per item),
+#           (book2 order number, quantity, price per item),
+#            ... ]]
+
+# orders = [[1, ("5464", 4, 9.99), ("8274", 18, 12.99), ("9744", 9, 44.95)], 
+#              [2, ("5464", 9, 9.99), ("9744", 9, 44.95)],
+#              [3, ("5464", 9, 9.99), ("88112", 11, 24.99)],
+#              [4, ("8732", 7, 11.99), ("7733", 11, 18.99), ("88112", 5, 39.95)]]
+
+
+```
+
+- Write a **functional**, which filters out/extracts the minimum price of the product (price per item * quantity) per bookshop order. It returns a list with 4-sublists/vectors. Each vector contains 2 items (bookshop order number, book order number).
+
+```{r}
+extract_min_price_order <- function(orders) {
+  lapply(orders, function(order) {
+    order_number <- order[[1]]  
+    prices <- sapply(order[-1], function(x) {
+      as.numeric(x[2]) * as.numeric(x[3])  
+    })
+    
+    min_index <- which.min(prices)
+  
+    book_order_number <- order[[min_index + 1]][[1]]
+    c(order_number, book_order_number)
+  })
+}
+orders <- list(
+  list(1, c("5464", 4, 9.99), c("8274", 18, 12.99), c("9744", 9, 44.95)), 
+  list(2, c("5464", 9, 9.99), c("9744", 9, 44.95)),
+  list(3, c("5464", 9, 9.99), c("88112", 11, 24.99)),
+  list(4, c("8732", 7, 11.99), c("7733", 11, 18.99), c("88112", 5, 39.95))
+)
+result <- extract_min_price_order(orders)
+print(result)
+```
+
+- Write a function in R that takes a list of integers as input and returns a new list containing the squares of all the even numbers in the input list. Implement the solution using **functional programming principles**, such as using functions like `lapply` or `Map` rather than explicit loops.
+
+```{r}
+square_of_even_numbers <- function(input_list) {
+  return(unlist(lapply(input_list[input_list %% 2 == 0], function(x) x^2)))
+}
+
+input_list <- c(2,3,5,6,4,101)
+result <- square_of_even_numbers(input_list)
+print(result) 
+
+```
+
+- You have a dataset containing information about sales transactions. The dataset has columns `product`, `quantity`, and `price`. Write a **closure** in R that takes this dataset as an argument, and returns a function. The returned function should calculate the total revenue for a specific product.
+
+```{r}
+create_revenue_calculator <- function(data) {
+  function(product_name) {
+    product_sales <- subset(data, product == product_name)
+    total_revenue <- sum(product_sales$quantity * product_sales$price)
+    
+    return(total_revenue)
+  }
+}
+sales_data <- data.frame(
+  product = c("A", "B", "A", "C", "B"),
+  quantity = c(2, 3, 1, 4, 2),
+  price = c(10, 15, 8, 5, 12)
+)
+revenue_calculator <- create_revenue_calculator(sales_data)
+total_revenue_A <- revenue_calculator("A")
+total_revenue_B <- revenue_calculator("B")
+print(total_revenue_A)  # Expected: (2*10 + 1*8) = 28
+print(total_revenue_B)  # Expected: (3*15 + 2*12) = 69
+
+```
+
