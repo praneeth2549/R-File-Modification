@@ -1,5 +1,6 @@
 ---
 title: "exercise 2"
+author: "Mannava praneeth chowdary"
 output: 
   word_document: default
   pdf_document: default
